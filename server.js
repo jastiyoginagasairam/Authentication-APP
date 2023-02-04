@@ -10,7 +10,7 @@ require('dotenv').config()
 
 const url=process.env.MONGOURL
 const port=process.env.PORT
-//const path =require('path');
+const path =require('path');
 
 
 mongoose.connect(url,{
@@ -21,10 +21,10 @@ mongoose.connect(url,{
     () => console.log('DB Connection established')
 )
 
-/*app.use(express.static(path.join(__dirname,"./client/build")))
+app.use(express.static(path.join(__dirname,"./client/build")))
 app.get("*",function(req,res){
     res.sendFile(path.join(__dirname,'./client/build/index.html'))
-})*/
+})
 
 
 app.use(express.json());
