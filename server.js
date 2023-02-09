@@ -29,17 +29,16 @@ app.get("*",function(req,res){
 
 app.use(express.json());
 
-app.use(cors({origin:"*"}))
+app.use(cors())
 
 app.post('/register',async (req, res) =>{
-    try{
         const {username,email,password,confirmpassword} = req.body;
         let exist = await Registeruser.findOne({email})
         if(exist){
-            return res.status(400).send("400");
+            res.status(400).json({message:"user already exist"});
         }
         if(password !== confirmpassword){
-            return res.status(404).send("404");
+            res.status(404).json({message:"password and confirm-password should be same"});
         }
         let newUser = new Registeruser({
             username,
@@ -48,12 +47,8 @@ app.post('/register',async (req, res) =>{
             confirmpassword
         })
         await newUser.save();
-        res.status(200).send("200");
-    }
-    catch(err){
-        console.log(err)
-        return res.status(500).send('Internel Server Error')
-    }
+        res.status(200).json({message:"Registered successfully"});
+    
 })
 
 app.post('/login',async (req, res) => {
@@ -61,10 +56,10 @@ app.post('/login',async (req, res) => {
         const {email,password} = req.body;
         let exist = await Registeruser.findOne({email});
         if(!exist) {
-            return res.status(404).send("404");
+            res.status(404).json({message:"Email not exist"});
         }
         if(exist.password !== password) {
-            return res.status(400).send("400");
+            res.status(400).json({message:"Wrong password"});
         }
         let payload = {
             user:{
@@ -81,7 +76,7 @@ app.post('/login',async (req, res) => {
     }
     catch(err){
         console.log(err);
-        return res.status(500).send("500");
+        res.status(500).json({message:"server error"});
     }
 })
 
@@ -99,6 +94,6 @@ app.get('/myprofile',middleware,async(req, res)=>{
     }
 })
 
-app.listen(5000||port,()=>{
-    console.log("server running...")
+app.listen(port,()=>{
+    console.log("server running...",port)
 })
